@@ -1,11 +1,14 @@
 import java.util.ArrayDeque;
+import java.util.InputMismatchException;
 
 public class Calculator {
 
   private ArrayDeque<Character> stack = new ArrayDeque<Character>();
   private ArrayDeque<Integer> num = new ArrayDeque<Integer>();
+  private int mod = 1;
 
   public void eval(String s){
+    Main m = new Main();
     String s1 = s.replaceAll("\\s","");
     char[] ch = s1.toCharArray();
     for(int i=0; i<ch.length; i++){
@@ -16,8 +19,8 @@ public class Calculator {
         }
         String sub = s1.substring(n, i);
         i--;
-        num.push(Integer.parseInt(sub));
-        
+        num.push(Integer.parseInt(sub)*mod);
+        mod=1;
       }
       else if(ch[i]=='('){
         if(i!=0 && (ch[i-1]>='0' && ch[i-1]<='9')){
@@ -28,7 +31,22 @@ public class Calculator {
         }
       }
       else if(ch[i]!=')'){
-        validChecker(ch[i]);
+        if(i!=0 && (ch[i-1]==')' || (ch[i-1]>='0' && ch[i-1]<='9'))){
+          validChecker(ch[i]);
+        }
+        else{
+          if(ch[i]=='+'){
+            mod = 1;
+          }
+          else if(ch[i]=='-'){
+            mod = -1;
+          }
+          else{
+            // throw new InputMismatchException("Invalid Expression");
+            System.out.println("Invalid Expression. Please enter a Valid Expression.");
+            m.newProb("");
+          }
+        }
       }
       else{
         operate();
